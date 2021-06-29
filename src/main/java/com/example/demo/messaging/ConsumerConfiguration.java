@@ -7,8 +7,9 @@ import java.util.Map;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.IntegerDeserializer;
-import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.stereotype.Component;
+
+import com.example.demo.entity.Person;
 
 import reactor.core.publisher.Flux;
 import reactor.kafka.receiver.KafkaReceiver;
@@ -18,8 +19,8 @@ import reactor.kafka.receiver.ReceiverRecord;
 @Component
 public class ConsumerConfiguration {
 
-    private  ReceiverOptions<Integer, String> receiverOptions;
-    Flux<ReceiverRecord<Integer, String>> kafkaFlux;
+    private  ReceiverOptions<Integer, Person> receiverOptions;
+    Flux<ReceiverRecord<Integer, Person>> kafkaFlux;
 	
     {
 	
@@ -29,8 +30,8 @@ public class ConsumerConfiguration {
 		        props.put(ConsumerConfig.CLIENT_ID_CONFIG, "sample-consumer");
 		        props.put(ConsumerConfig.GROUP_ID_CONFIG, "mygroup");
 		        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, IntegerDeserializer.class);
-		        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-		        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+		        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, PersonDeserializer.class);
+		        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
 		        receiverOptions = ReceiverOptions.create(props);
 		        receiverOptions = receiverOptions.subscription(Collections.singleton("junction"))
 		                .addAssignListener(partitions -> System.out.printf("onPartitionsAssigned {}", partitions))
@@ -41,11 +42,11 @@ public class ConsumerConfiguration {
 		    
 	}
     
-    public ReceiverOptions<Integer,String> getReceiver() {
+    public ReceiverOptions<Integer,Person> getReceiver() {
     	return  receiverOptions;
     }
     
-    public Flux<ReceiverRecord<Integer, String>> getFlux(){
+    public Flux<ReceiverRecord<Integer, Person	>> getFlux(){
     	return kafkaFlux;
     }
 }

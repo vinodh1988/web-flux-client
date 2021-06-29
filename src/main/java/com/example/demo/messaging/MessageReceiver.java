@@ -21,7 +21,8 @@ public class MessageReceiver implements InitializingBean {
   public void consumeMessages() {
 	  configuration.getFlux().subscribe(record ->{
 		  ReceiverOffset offset = record.receiverOffset();
-		  String data ="\n "+ record.key() +"  "+record.value()+" received from "+record.topic();
+		  String data ="\n "+ record.key() +"  "+record.value().getName()+" received from "+record.topic();
+		   System.out.println(record.value());
 		  try {
 			Files.write(Paths.get("e:/result.txt"), data.getBytes(), StandardOpenOption.APPEND);
 		  } catch (IOException e) {
